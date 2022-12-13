@@ -15,9 +15,12 @@ function Email({ route }: EmailProps) {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
 
-  useEffect(async () => {
-    const availability = await checkAvailability();
-    setIsAvailable(availability);
+  useEffect(() => {
+    async function availability() {
+      const isAvailable = await checkAvailability();
+      setIsAvailable(isAvailable);
+    }
+    availability();
   }, []);
 
   const sendMail = () =>

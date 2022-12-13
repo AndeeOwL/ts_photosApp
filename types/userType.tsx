@@ -1,1 +1,1 @@
-export type userType = [number, string, string, boolean];
+export type userType = [number, string, string, boolean] | undefined | void;

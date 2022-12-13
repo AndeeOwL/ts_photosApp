@@ -45,8 +45,13 @@ function Login() {
   };
 
   const navigateLogin = async () => {
-    const user: userType = await loginCheck(username, password);
-    navigateHome(user[0], user[1], user[3]);
+    const user: userType = await loginCheck(username, password).then(
+      function () {
+        if (user) {
+          navigateHome(user[0], user[1], user[3]);
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -57,19 +62,25 @@ function Login() {
   }, [response, googleAccessToken]);
 
   const fetchUserInformation = async () => {
-    const userInfo = await getUserInfo(googleAccessToken);
-    if (userInfo[0] === true) {
-      navigateHome(userInfo[1], userInfo[2], userInfo[3]);
-    }
+    const userInfo: userType = await getUserInfo(googleAccessToken).then(
+      function () {
+        if (userInfo) {
+          navigateHome(userInfo[0], userInfo[1], userInfo[3]);
+        }
+      }
+    );
   };
 
   const navigateRegister = () => {
     navigation.navigate("Register");
   };
 
-  const loginWithFaceBook = () => {
-    const userInfo: fbLoginType = facebookLogin();
-    navigateHome(userInfo[1], userInfo[2], userInfo[3]);
+  const loginWithFaceBook = async () => {
+    const userInfo: userType = await facebookLogin().then(function () {
+      if(userInfo){
+      navigateHome(userInfo[0], userInfo[1], userInfo[3]);
+      }
+    });
   };
 
   return (

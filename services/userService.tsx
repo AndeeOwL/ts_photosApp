@@ -5,16 +5,19 @@ import { userType } from "../types/userType";
 import { fetchUser, insertUser } from "../util/database";
 
 export async function loginCheck(username: string, password: string) {
-  const user: userType = await fetchUser(username);
-  if (username !== user[1]) {
-    Alert.alert("Invalid username");
-    return;
-  }
-  if (password !== user[2]) {
-    Alert.alert("Invalid password");
-    return;
-  }
-  return user;
+  const user: userType = await fetchUser(username).then(function () {
+    if (user !== undefined) {
+      if (username !== user[1]) {
+        Alert.alert("Invalid username");
+        return;
+      }
+      if (password !== user[2]) {
+        Alert.alert("Invalid password");
+        return;
+      }
+      return user;
+    }
+  });
 }
 
 export async function getUserInfo(googleAccessToken: string) {
@@ -24,27 +27,39 @@ export async function getUserInfo(googleAccessToken: string) {
     },
   });
   const userInfo: userInfoType = await response.json();
-  const user: userType = await fetchUser(userInfo.email);
-  if (user.length === 4) {
-    return [true, user[0], user[1], user[3]];
-  } else {
-    insertUser(userInfo.email, userInfo.id, false);
-    const user: any = await fetchUser(userInfo.email);
-    return [true, user[0], user[1], user[3]];
-  }
+  const user: userType = await fetchUser(userInfo.email).then(
+    async function () {
+      if (user !== undefined) {
+        return user;
+      } else {
+        insertUser(userInfo.email, userInfo.id, false);
+        const newUser: userType = await fetchUser(userInfo.email).then(
+          function () {
+            return newUser;
+          }
+        );
+      }
+    }
+  );
 }
 
-export function facebookLogin() {
+export async function facebookLogin() {
   Profile.getCurrentProfile().then(async function (currentProfile: any) {
     if (currentProfile) {
-      const user: userType = await fetchUser(currentProfile.name);
-      if (user.length === 4) {
-        return [true, user[0], user[1], user[3]];
-      } else {
-        insertUser(currentProfile.name, currentProfile.userID, false);
-        const newUser: userType = await fetchUser(currentProfile.name);
-        return [true, newUser[0], newUser[1], newUser[3]];
-      }
+      const user: userType = await fetchUser(currentProfile.name).then(
+        async function () {
+          if (user !== undefined) {
+            return user;
+          } else {
+            insertUser(currentProfile.name, currentProfile.userID, false);
+            const newUser: userType = await fetchUser(currentProfile.name).then(
+              function () {
+                return newUser;
+              }
+            );
+          }
+        }
+      );
     }
   });
 }

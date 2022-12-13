@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import { Alert } from "react-native";
+import { userType } from "../types/userType";
 
 const database = SQLite.openDatabase("photos.db");
 
@@ -134,7 +135,7 @@ export function fetchUser(username: string) {
             user.push(dp.password);
             user.push(dp.subscribed);
           }
-          resolve(user);
+          return user;
         },
         (_, error) => {
           Alert.alert("Invalid username");

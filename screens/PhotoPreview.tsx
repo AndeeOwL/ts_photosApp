@@ -4,7 +4,6 @@ import { Button, Image, ScrollView, StyleSheet, View } from "react-native";
 import { ShareDialog } from "react-native-fbsdk-next";
 import { windowHeight, windowWidth } from "../constants/dimensions";
 import { PhotoPreviewProps, RootStackParamList } from "../types/navigationType";
-import { photoContentType } from "../types/photoContentType";
 
 function PhotoPreview({ route }: PhotoPreviewProps) {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
