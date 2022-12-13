@@ -12,7 +12,7 @@ export function init() {
         id INTEGER PRIMARY KEY NOT NULL,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        subscribed BOOLEAN NOT NULL,
+        subscribed INTEGER NOT NULL
     )`,
         [],
         () => {
@@ -81,7 +81,7 @@ export function fetchPhotos(id: number) {
   return promise;
 }
 
-export function subscribe(id: number, subscribed: boolean) {
+export function subscribe(id: number, subscribed: number) {
   const promise = new Promise((resolve: any, reject: any) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -102,12 +102,12 @@ export function subscribe(id: number, subscribed: boolean) {
 export function insertUser(
   username: string,
   password: string,
-  subscribed: any
+  subscribed: number
 ) {
   const promise = new Promise((resolve: any, reject: any) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO users (username,password,subsribed) VALUES (?,?,?)`,
+        `INSERT INTO users (username,password,subscribed) VALUES (?,?,?)`,
         [username, password, subscribed],
         (_, result) => {
           resolve(result);
@@ -135,7 +135,7 @@ export function fetchUser(username: string) {
             user.push(dp.password);
             user.push(dp.subscribed);
           }
-          return user;
+          resolve(user);
         },
         (_, error) => {
           Alert.alert("Invalid username");

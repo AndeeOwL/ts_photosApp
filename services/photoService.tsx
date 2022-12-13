@@ -8,11 +8,11 @@ import { insertPhoto } from "../util/database";
 
 export async function takePhoto(
   loadedImages: string[],
-  subscribed: boolean,
+  subscribed: number,
   verifyPermissions: any,
   id: number
 ) {
-  if (loadedImages.length < 10 || subscribed) {
+  if (loadedImages.length < 10 || subscribed === 1) {
     const hasPermission = await verifyPermissions();
     if (!hasPermission) {
       return;
@@ -30,10 +30,10 @@ export async function takePhoto(
 
 export async function uploadPhoto(
   loadedImages: string[],
-  subscribed: boolean,
+  subscribed: number,
   id: number
 ) {
-  if (loadedImages.length < 10 || subscribed) {
+  if (loadedImages.length < 10 || subscribed === 1) {
     const image: any = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,

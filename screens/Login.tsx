@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { AccessToken, LoginButton } from "react-native-fbsdk-next";
+import { AccessToken, LoginButton, Profile } from "react-native-fbsdk-next";
 import LoginForm from "../components/LoginForm";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
@@ -12,8 +12,7 @@ import {
 } from "../services/userService";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigationType";
-import { userType } from "../types/userType";
-import { fbLoginType } from "../types/fbLoginType";
+import { fetchUser, insertUser } from "../util/database";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -36,22 +35,15 @@ function Login() {
     setPassword(enteredText);
   };
 
-  const navigateHome = (id: number, username: string, subscribed: boolean) => {
-    navigation.navigate("Home", {
-      id: id,
-      username: username,
-      subscribed: subscribed,
-    });
-  };
-
   const navigateLogin = async () => {
-    const user: userType = await loginCheck(username, password).then(
-      function () {
-        if (user) {
-          navigateHome(user[0], user[1], user[3]);
-        }
-      }
-    );
+    const user: any = await loginCheck(username, password);
+    if (user) {
+      navigation.navigate("Home", {
+        id: user[0],
+        username: user[1],
+        subscribed: user[3],
+      });
+    }
   };
 
   useEffect(() => {
@@ -62,23 +54,38 @@ function Login() {
   }, [response, googleAccessToken]);
 
   const fetchUserInformation = async () => {
-    const userInfo: userType = await getUserInfo(googleAccessToken).then(
-      function () {
-        if (userInfo) {
-          navigateHome(userInfo[0], userInfo[1], userInfo[3]);
-        }
-      }
-    );
+    const userInfo: any = await getUserInfo(googleAccessToken);
+    if (userInfo) {
+      navigation.navigate("Home", {
+        id: userInfo[0],
+        username: userInfo[1],
+        subscribed: userInfo[3],
+      });
+    }
   };
 
   const navigateRegister = () => {
     navigation.navigate("Register");
   };
 
-  const loginWithFaceBook = async () => {
-    const userInfo: userType = await facebookLogin().then(function () {
-      if(userInfo){
-      navigateHome(userInfo[0], userInfo[1], userInfo[3]);
+  const loginWithFaceBook = () => {
+    Profile.getCurrentProfile().then(async function (currentProfile: any) {
+      if (currentProfile) {
+        const user: any = await fetchUser(currentProfile.name);
+        if (user.length === 4) {
+          navigation.navigate("Home", {
+            id: user[0],
+            username: user[1],
+            subscribed: user[3],
+          });
+        }
+        await insertUser(currentProfile.name, currentProfile.userID, 0);
+        const newUser: any = fetchUser(currentProfile.name);
+        navigation.navigate("Home", {
+          id: newUser[0],
+          username: newUser[1],
+          subscribed: newUser[3],
+        });
       }
     });
   };

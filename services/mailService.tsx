@@ -4,7 +4,7 @@ import { Text } from "react-native";
 export async function composeMail(
   subject: string,
   body: string,
-  recipients: [],
+  recipients: string[],
   image: string
 ) {
   await MailComposer.composeAsync({
@@ -15,8 +15,8 @@ export async function composeMail(
   });
 }
 
-export function createRecipients(recipients: [string], email: string) {
-  let newRecipients: [string] = [...recipients];
+export function createRecipients(recipients: string[], email: string) {
+  let newRecipients: string[] = [...recipients];
   newRecipients.push(email);
   return newRecipients;
 }
@@ -26,10 +26,7 @@ export async function checkAvailability() {
   return isMailAvailable;
 }
 
-export function showRecipients(recipients: []) {
-  if (recipients.length === 0) {
-    return <Text style={{ margin: 10, fontSize: 22 }}>No recipients</Text>;
-  }
+export function showRecipients(recipients: string[]) {
   return recipients.map((recipient, index) => {
     return (
       <Text style={{ fontSize: 22 }} key={index}>

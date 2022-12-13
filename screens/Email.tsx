@@ -11,7 +11,7 @@ import { EmailProps } from "../types/navigationType";
 function Email({ route }: EmailProps) {
   const [isAvailable, setIsAvailable] = useState(false);
   const [email, setEmail] = useState("");
-  const [recipients, setRecipients] = useState<any>();
+  const [recipients, setRecipients] = useState<string[]>([]);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
 
@@ -23,11 +23,14 @@ function Email({ route }: EmailProps) {
     availability();
   }, []);
 
-  const sendMail = () =>
-    composeMail(subject, body, recipients, route.params.image);
+  const sendMail = () => {
+    if (recipients !== undefined) {
+      composeMail(subject, body, recipients, route.params.image);
+    }
+  };
 
   const addRecipients = () => {
-    const newRecipients = createRecipients(recipients, email);
+    const newRecipients: string[] = createRecipients(recipients, email);
     setRecipients(newRecipients);
     setEmail("");
   };
@@ -59,7 +62,9 @@ function Email({ route }: EmailProps) {
         />
       </View>
       <Button title='Add recipient' onPress={addRecipients} />
-      {showRecipients(recipients)}
+      {(recipients && showRecipients(recipients)) || (
+        <Text style={{ margin: 10, fontSize: 22 }}>No recipients</Text>
+      )}
       {isAvailable ? (
         <Button title='Send mail' onPress={sendMail} />
       ) : (

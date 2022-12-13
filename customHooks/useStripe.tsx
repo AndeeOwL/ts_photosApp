@@ -59,7 +59,7 @@ export default function useStripe(name: string, id: number, cartInfo: any) {
       Alert.alert(error.code, error.message);
       return;
     } else if (paymentMethod) {
-      subscribe(id, true);
+      subscribe(id, 1);
       Alert.alert(
         "Success",
         `The payment method was created successfully. paymentMethodId: ${paymentMethod.id}`
@@ -86,7 +86,7 @@ export default function useStripe(name: string, id: number, cartInfo: any) {
       if (confirmError) {
         Alert.alert("You must confirm the payment to proceed");
       }
-      subscribe(id, true);
+      subscribe(id, 1);
       Alert.alert("Success", `The payment was successfull.`);
     }
   };

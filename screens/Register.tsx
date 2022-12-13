@@ -30,7 +30,7 @@ function Register() {
       return;
     }
 
-    await insertUser(username, password, false);
+    await insertUser(username, password, 0);
     navigation.navigate("Login");
   };
 
