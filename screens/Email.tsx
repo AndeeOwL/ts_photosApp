@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import {
   checkAvailability,
   composeMail,

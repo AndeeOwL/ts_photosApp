@@ -5,11 +5,7 @@ import { AccessToken, LoginButton, Profile } from "react-native-fbsdk-next";
 import LoginForm from "../components/LoginForm";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import {
-  facebookLogin,
-  getUserInfo,
-  loginCheck,
-} from "../services/userService";
+import { getUserInfo, loginCheck } from "../services/userService";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigationType";
 import { fetchUser, insertUser } from "../util/database";
